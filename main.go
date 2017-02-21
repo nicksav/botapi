@@ -1,17 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"html"
+	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 )
 
+var count = 1
+
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello la, %q", html.EscapeString(r.URL.Path))
-	})
+	http.HandleFunc("/", handler)
+	log.Fatal(http.ListenAndServe(":9010", nil))
+}
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
-
+func handler(w http.ResponseWriter, r *http.Request) {
+	count++
+	var encoder = json.NewEncoder(w)
+	encoder.Encode(map[string]string{"count": strconv.Itoa(count),
+		"ip": r.RemoteAddr})
 }
