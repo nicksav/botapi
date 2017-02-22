@@ -24,6 +24,10 @@ type  Address struct {
 
 var people []Person
 
+
+
+/*This is the same as GET -> which is used to retieve resourse based on specified
+ID */
 func GetPersonEndPoint (w http.ResponseWriter, req *http.Request){
     params := mux.Vars(req)
     for _, item := range people {
@@ -42,23 +46,39 @@ func GetPersonEndPoint (w http.ResponseWriter, req *http.Request){
 
 
 
+
+
+
+/*This is the same as GET -> which is used to retieve resourse */
 func GetPeopleEndPoint (w http.ResponseWriter, req *http.Request){
     
     json.NewEncoder(w).Encode(people)
 }
 
 
+
+
+/*This is the same as POST -> which is used to create resourse*/
 func CreatePersonEndPoint (w http.ResponseWriter, req *http.Request){
     params := mux.Vars(req)
     var person Person
     _=json.NewDecoder(req.Body).Decode(&person)
     person.ID = params["id"]
+    /*adding newly created person to the struct*/
     people = append(people,person)
+    /*returning back to the page to view*/
     json.NewEncoder(w).Encode(people)
 }
 
+
+
+/*This is DELETE -> which is used to delete resourse*/
 func DeletePersonEndPoint (w http.ResponseWriter, req *http.Request){
-    params :=mux.Vars(req)
+    /*retieve the parameter entered by the user*/
+    params := mux.Vars(req)
+
+    /*cheking if the param "ID" entered by the user is matching any 
+    existing ID*/
     for index, item := range people {
         if item.ID == params["id"]{
             people = append(people[:index], people[index+1:]...)
@@ -67,6 +87,23 @@ func DeletePersonEndPoint (w http.ResponseWriter, req *http.Request){
     }
     json.NewEncoder(w).Encode(people)
 }
+
+
+
+func AddPersonLastNameEndPoint (w http.ResponseWriter, req *http.Request) {
+    params := mux.Vars(req)
+    var person Person
+    _=json.NewDecoder(req.Body).Decode(&person)
+    person.ID = params["id"]
+    person.Lastname = params ["lastname"]
+    /*adding newly created person to the struct*/
+    people = append(people,person)
+    /*returning back to the page to view*/
+    json.NewEncoder(w).Encode(people)
+
+}
+
+
 
 func main() {
     router := mux.NewRouter()
@@ -81,12 +118,14 @@ func main() {
 /*what you will be entering in url for example
 ---> if you type in localhost:12345/people -> it will get you all people from the array
 ---> if you type in localhost:12345/people/1 -> it will get you person under id 1*/
+
     router.HandleFunc("/people", GetPeopleEndPoint).Methods("GET")
     router.HandleFunc("/people/{id}", GetPersonEndPoint ).Methods("GET")
     router.HandleFunc("/people/{id}", CreatePersonEndPoint).Methods("POST")
     router.HandleFunc("/people/{id}", DeletePersonEndPoint).Methods("DELETE")
+    router.HandleFunc("/people/{id}/{lastname}", AddPersonLastNameEndPoint).Methods("POST")
 
-
+/*localhost:12345*/
     log.Fatal(http.ListenAndServe(":12345", router))
 
 }
