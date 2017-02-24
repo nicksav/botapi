@@ -41,7 +41,7 @@ func GetPersonEndPoint(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(&Person{})
 }
 
-/*GetPeopleEndPoint -- this is the same as GET -> which is used to retieve resourse */
+/*GetPeopleEndPoint -- this  is the same as GET -> which is used to retieve resourse */
 func GetPeopleEndPoint(w http.ResponseWriter, req *http.Request) {
 
 	json.NewEncoder(w).Encode(people)
