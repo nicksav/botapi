@@ -12,7 +12,7 @@ ENV GO_ENV production
 # either manually or with a tool like "godep".)
 RUN go install botapi
 
-ADD settings /go/bin/settings
+# ADD settings /go/bin/settings
 
 # Run the outyet command by default when the container starts.
 ENTRYPOINT /go/bin/botapi
